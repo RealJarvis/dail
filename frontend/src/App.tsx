@@ -3,8 +3,10 @@ import './App.css'
 
 function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  /*const daysOfWeekEN: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];*/
+  const daysOfWeekUA: string[] = ["Пон", "Вів", "Сер", "Чет", "Пт", "Суб", "Нед"];
 
-  function toNextMonth() {
+  function toNextMonth(): void {
     setCurrentDate((date) => {
       const newDate = new Date(date);
       newDate.setMonth(newDate.getMonth() + 1);
@@ -12,7 +14,7 @@ function BookingCalendar() {
     });
   }
 
-  function toPrevMonth() {
+  function toPrevMonth(): void {
     setCurrentDate((date) => {
       const newDate = new Date(date);
       newDate.setMonth(newDate.getMonth() - 1);
@@ -24,6 +26,9 @@ function BookingCalendar() {
     month: "long",
     year: "numeric",
   });
+  const numberOfDays = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
+  const calendarDays = Array.from({length: numberOfDays},
+                                          (_, index) => index + 1)
 
   return (
     <>
@@ -53,7 +58,21 @@ function BookingCalendar() {
         </div>
 
         <div id="calendar-grid">
-          {/* calendar days will go here */}
+          {daysOfWeekUA.map((day) => (
+              <div className="day-name" key={day}>
+                {day}
+              </div>
+              )
+          )}
+          {
+            calendarDays.map((day) => (
+                <div className="day-number" key={day}>
+                  {day}
+                </div>
+            ))
+
+          }
+
         </div>
       </div>
     </>
