@@ -3,6 +3,7 @@ import './App.css'
 
 function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  //const [selectedDay, setSelectedDay] = useSate<number | null>(null)
   /*const daysOfWeekEN: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];*/
   const daysOfWeekUA: string[] = ["Пон", "Вів", "Сер", "Чет", "Пт", "Суб", "Нед"];
 
@@ -22,14 +23,20 @@ function BookingCalendar() {
     });
   }
 
-  const monthName = currentDate.toLocaleString("en-US", {
+
+  const monthName = currentDate.toLocaleString("uk-UA", {
     month: "long",
     year: "numeric",
   });
   const numberOfDays = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate()
-  const calendarDays = Array.from({length: numberOfDays},
-                                          (_, index) => index + 1)
+  /*the amount of the days for each month*/
+  /*the first day of the calendar month*/
+  const firstDayOfWeek = (((new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay()) + 6) % 7);
 
+  const numberOfEmptydays = Array.from({length: firstDayOfWeek}, () => null);
+  const nonEmptycalendarDays = Array.from({length: numberOfDays},
+                                          (_, index) => index + 1)
+  const calendarDays = [...numberOfEmptydays, ...nonEmptycalendarDays]
   return (
     <>
       <div id="step-container"></div>
@@ -65,13 +72,14 @@ function BookingCalendar() {
               )
           )}
           {
-            calendarDays.map((day) => (
-                <div className="day-number" key={day}>
+            calendarDays.map((day, index) => (
+                <div className="day-number" key={day === null ? `blank-${index}` : `day-${day}`}>
                   {day}
                 </div>
             ))
 
           }
+
 
         </div>
       </div>
