@@ -65,13 +65,13 @@ body {
     border: 1px solid #213650;
 }
 
-.day-number {
+button.day-number {
     display: flex;
     justify-content: center;
 }
-.day-number:hover {
+button:hover {
     cursor: pointer;
-    background-color: rgba(5, 90, 208, 0.96);
+    background-color: rgba(41, 130, 255, 0.96);
     border-radius: 5px;
 
 }

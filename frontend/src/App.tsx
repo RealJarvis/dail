@@ -3,9 +3,13 @@ import './App.css'
 
 function BookingCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  //const [selectedDay, setSelectedDay] = useSate<number | null>(null)
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
   /*const daysOfWeekEN: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];*/
   const daysOfWeekUA: string[] = ["Пон", "Вів", "Сер", "Чет", "Пт", "Суб", "Нед"];
+
+  function selectDay(day: number): void {
+    setSelectedDay(day);
+  }
 
   function toNextMonth(): void {
     setCurrentDate((date) => {
@@ -72,16 +76,23 @@ function BookingCalendar() {
               )
           )}
           {
-            calendarDays.map((day, index) => (
-                <div className="day-number" key={day === null ? `blank-${index}` : `day-${day}`}>
-                  {day}
-                </div>
-            ))
+            calendarDays.map((day, index) => {
+               if (day === null) {
+                 return (
+                  <div className="day-number" key={`blank-${index}`}>
+                    {day}
+                  </div>
+                 );}
+                 else {
+                   return (<button className="day-number" onClick={() => selectDay(day)} key={`day-${day}`}>{day}</button>);
+                  }
+          })
 
           }
 
 
         </div>
+        <p>Вибраний день: {selectedDay ?? "none"}</p>
       </div>
     </>
   );
