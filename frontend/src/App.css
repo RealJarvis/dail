@@ -34,7 +34,7 @@ body {
     justify-content: center;
 
     width: 340px;
-    background-color: #0072ff;
+    background: #061229;;
     color: white;
 }
 
@@ -59,26 +59,32 @@ body {
 
 #calendar-grid {
     display: grid;
+    padding: 10px;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
     background: #07152A;
     border: 1px solid #213650;
 }
 
+button {
+    border: none;
+}
+
 button.day-number {
     display: flex;
+    font-size: 15px;
+    border-radius: 6px;
     justify-content: center;
 }
 button:hover {
     cursor: pointer;
-    background-color: rgba(41, 130, 255, 0.96);
-    border-radius: 5px;
+    background-color: #d3d3d3;
 
 }
 
 @media (max-width: 768px) {
     #booking-container {
-        width: 100%;
+        width: 300px;
         max-width: 430px;
         box-sizing: border-box;
     }
@@ -86,6 +92,7 @@ button:hover {
     #calendar-grid {
         gap: 4px;
     }
+    
 }
 
 

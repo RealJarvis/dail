@@ -92,7 +92,7 @@ function BookingCalendar() {
 
 
         </div>
-        <p>Вибраний день: {selectedDay ?? "none"}</p>
+        <p>Вибраний день: {selectedDay ?? "none"}/{currentDate.getMonth()+1}</p>
       </div>
     </>
   );
