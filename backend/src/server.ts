@@ -6,6 +6,7 @@ import pricingRouter from "./routes/pricing.js";
 import availabilityRouter from "./routes/availability.js";
 import googleCalendarRouter from "./routes/googleCalendar.js";
 import bookingHoldsRouter from "./routes/bookingHolds.js";
+import adminRouter from "./routes/admin.js";
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use(
         origin: frontendUrl,
     }),
 );
+app.use("/api/admin", adminRouter);
+
 
 app.use("/api", pricingRouter);
 app.use("/api", availabilityRouter);
