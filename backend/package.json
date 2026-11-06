@@ -9,7 +9,6 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js",
-    "student:create": "tsx src/scripts/createStudent.ts",
     "slot:create": "tsx src/scripts/createSlot.ts"
   },
   "keywords": [],

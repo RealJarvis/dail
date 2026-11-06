@@ -1,25 +1,114 @@
 #root {
     min-height: 100vh;
-    padding: 24px 16px 48px;
+    padding: 32px 16px 64px;
 }
 
-/* Empty for now, reserved for the booking-step indicator */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: #f8fafc;
+    background:
+            radial-gradient(
+                    circle at top,
+                    #10244a 0%,
+                    #050d20 42%,
+                    #020617 100%
+            );
+}
+
+button,
+input {
+    font: inherit;
+}
+
 #step-container {
     display: none;
 }
 
 #booking-container {
-    width: min(100%, 620px);
-    max-width: 100%;
+    width: min(100%, 680px);
     margin: 0 auto;
-    padding: 24px;
+    padding: 28px;
     overflow: hidden;
-    background: #061229;
-    border: 1px solid #e1e7f0;
+    background: rgba(6, 18, 41, 0.96);
+    border: 1px solid #263b60;
     border-radius: 24px;
     box-shadow:
-            0 20px 45px rgba(40, 55, 85, 0.08),
-            0 4px 12px rgba(40, 55, 85, 0.05);
+            0 30px 80px rgba(0, 0, 0, 0.35),
+            0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Lesson type */
+
+#lesson-type-selector {
+    margin-bottom: 30px;
+}
+
+#lesson-type-selector h2 {
+    margin: 0 0 14px;
+    color: #ffffff;
+    font-size: 1.25rem;
+}
+
+.lesson-type-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.lesson-type-options button {
+    display: flex;
+    min-height: 84px;
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    color: #dce7f8;
+    text-align: left;
+    background: #0b1a35;
+    border: 1px solid #304567;
+    border-radius: 15px;
+    cursor: pointer;
+    transition:
+            color 160ms ease,
+            background-color 160ms ease,
+            border-color 160ms ease,
+            transform 160ms ease,
+            box-shadow 160ms ease;
+}
+
+.lesson-type-options button:hover {
+    background: #10264a;
+    border-color: #5685ce;
+    transform: translateY(-1px);
+}
+
+.lesson-type-options button.selected {
+    color: #ffffff;
+    background: linear-gradient(
+            135deg,
+            #246fe5,
+            #1b5ec5
+    );
+    border-color: #6da1f4;
+    box-shadow: 0 8px 22px rgba(36, 111, 229, 0.3);
+}
+
+.lesson-type-options strong {
+    font-size: 1rem;
+}
+
+.lesson-type-options span {
+    color: #9fb1cb;
+    font-size: 0.86rem;
+}
+
+.lesson-type-options button.selected span {
+    color: #dbeafe;
 }
 
 /* Calendar header */
@@ -28,13 +117,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
 }
 
 #month-container {
     color: #ffffff;
     font-size: 1.3rem;
-    font-weight: 700;
+    font-weight: 750;
+    text-align: center;
     text-transform: capitalize;
 }
 
@@ -44,9 +134,9 @@
     height: 42px;
     padding: 0;
     place-items: center;
-    color: #334155;
-    background: #f5f7fb;
-    border: 1px solid #dce3ed;
+    color: #1e3a5f;
+    background: #f8fafc;
+    border: 1px solid #d8e1ed;
     border-radius: 12px;
     cursor: pointer;
     transition:
@@ -56,15 +146,15 @@
 }
 
 .nav-btn:hover {
-    background: #eaf1ff;
-    border-color: #8cb4ff;
+    background: #dbeafe;
+    border-color: #75a7ef;
 }
 
 .nav-btn:active {
     transform: scale(0.94);
 }
 
-/* Calendar */
+/* Calendar grid */
 
 #calendar-grid {
     display: grid;
@@ -73,10 +163,10 @@
 }
 
 .day-name {
-    padding: 4px 0 10px;
-    color: #ffffff;
-    font-size: 0.76rem;
-    font-weight: 700;
+    padding: 5px 0 10px;
+    color: #b9c6da;
+    font-size: 0.74rem;
+    font-weight: 750;
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -84,7 +174,7 @@
 
 .day-name:nth-child(6),
 .day-name:nth-child(7) {
-    color: #6184c5;
+    color: #77a8ef;
 }
 
 .day-number {
@@ -93,14 +183,13 @@
     aspect-ratio: 1;
     padding: 0;
     place-items: center;
-    color: #ffffff;
+    color: #eef4ff;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 650;
 }
 
-/* Blank cells at the beginning of the month */
 div.day-number:empty {
     visibility: hidden;
 }
@@ -115,63 +204,69 @@ button.day-number {
 }
 
 button.day-number:hover {
-    color: #175bcc;
-    background: #edf4ff;
-    border-color: #cfe0ff;
+    color: #ffffff;
+    background: #142b50;
+    border-color: #3f6399;
 }
 
 button.day-number:active {
-    transform: scale(0.93);
+    transform: scale(0.92);
 }
 
 button.day-number.selected-day {
     color: #ffffff;
     background: #246fe5;
-    border-color: #246fe5;
-    box-shadow: 0 6px 14px rgba(36, 111, 229, 0.25);
+    border-color: #6fa4f8;
+    box-shadow: 0 6px 16px rgba(36, 111, 229, 0.35);
 }
 
-/* Selected-date text */
+/* Selected date */
 
 #booking-container > p {
     margin: 22px 0 0;
-    color: #ffffff;
+    color: #cbd5e1;
     font-size: 0.92rem;
 }
 
-/* Available times */
+/* Time slots */
 
 #time-slots {
-    margin-top: 24px;
+    margin-top: 22px;
     padding-top: 22px;
-    border-top: 1px solid #e7ebf2;
+    border-top: 1px solid #2b3e5f;
+}
+
+#time-slots > p {
+    color: #b9c6da;
+    line-height: 1.5;
 }
 
 #time-slots > p:first-child {
     margin: 0 0 16px;
-    color: #ffffff;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
 }
 
 .time-slot {
-    margin: 0 8px 8px 0;
+    margin: 0 8px 9px 0;
     padding: 10px 18px;
-    color: #2058ad;
-    background: #edf4ff;
-    border: 1px solid #cbdcff;
+    color: #bcd5ff;
+    background: #102344;
+    border: 1px solid #34588c;
     border-radius: 999px;
-    font-weight: 700;
+    font-weight: 750;
     cursor: pointer;
     transition:
             color 150ms ease,
             background-color 150ms ease,
             border-color 150ms ease,
-            transform 150ms ease;
+            transform 150ms ease,
+            box-shadow 150ms ease;
 }
 
 .time-slot:hover {
-    background: #dceaff;
-    border-color: #99bcff;
+    color: #ffffff;
+    background: #183765;
+    border-color: #6798df;
 }
 
 .time-slot:active {
@@ -181,176 +276,264 @@ button.day-number.selected-day {
 .time-slot.selected {
     color: #ffffff;
     background: #246fe5;
-    border-color: #246fe5;
-    box-shadow: 0 5px 12px rgba(36, 111, 229, 0.22);
+    border-color: #6fa4f8;
+    box-shadow: 0 6px 16px rgba(36, 111, 229, 0.3);
 }
 
-/* Basket */
-
-#booking-basket {
-    margin-top: 26px;
-    padding: 20px;
-    background: #f7f9fc;
-    border: 1px solid #e0e6ef;
-    border-radius: 18px;
+.error-message {
+    color: #fca5a5 !important;
 }
 
-#booking-basket h2 {
-    margin: 0 0 16px;
-    color: #172033;
-    font-size: 1.2rem;
-}
-
-#booking-basket > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 12px 0;
-    color: #47536a;
-    border-bottom: 1px solid #e2e7ef;
-}
-
-#booking-basket > p:last-child {
-    margin: 18px 0 0;
-    color: #172033;
-    font-size: 1.1rem;
-    text-align: right;
-}
-
-/* Keyboard accessibility */
-
-button:focus-visible {
-    outline: 3px solid rgba(36, 111, 229, 0.3);
-    outline-offset: 2px;
-}
-
-/* Phones */
-
-@media (max-width: 520px) {
-    #root {
-        padding: 12px 10px 32px;
-    }
-
-    #booking-container {
-        padding: 18px 14px;
-        border-radius: 18px;
-    }
-
-    #calendar-header {
-        margin-bottom: 18px;
-    }
-
-    #month-container {
-        font-size: 1.12rem;
-    }
-
-    .nav-btn {
-        width: 38px;
-        height: 38px;
-    }
-
-    #calendar-grid {
-        gap: 5px;
-    }
-
-    .day-name {
-        font-size: 0.68rem;
-    }
-
-    .day-number {
-        border-radius: 9px;
-        font-size: 0.88rem;
-    }
-
-    #booking-basket {
-        padding: 16px;
-    }
-
-    #booking-basket > div {
-        flex-direction: column;
-        gap: 4px;
-    }
-}
+/* Student information */
 
 #student-details {
-    margin-top: 26px;
+    margin-top: 28px;
     padding-top: 24px;
-    border-top: 1px solid #dce3ed;
+    border-top: 1px solid #2b3e5f;
 }
 
 #student-details h2 {
     margin: 0 0 18px;
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
 }
 
 #student-details label {
     display: block;
-    margin: 14px 0 7px;
+    margin: 15px 0 7px;
     color: #d5deed;
-    font-size: 0.88rem;
-    font-weight: 600;
-}
-
-#student-details label span {
-    color: #8e9bb0;
-    font-weight: 400;
+    font-size: 0.9rem;
+    font-weight: 650;
 }
 
 #student-details input {
+    display: block;
     width: 100%;
+    min-height: 48px;
     padding: 12px 14px;
     color: #172033;
     background: #ffffff;
-    border: 1px solid #cad4e3;
-    border-radius: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
     outline: none;
+    transition:
+            border-color 150ms ease,
+            box-shadow 150ms ease;
+}
+
+#student-details input::placeholder {
+    color: #8793a5;
 }
 
 #student-details input:focus {
     border-color: #5790ee;
-    box-shadow: 0 0 0 3px rgba(87, 144, 238, 0.2);
+    box-shadow: 0 0 0 4px rgba(87, 144, 238, 0.2);
 }
 
-.discount-row {
+/* Basket */
+
+#booking-basket {
+    margin-top: 28px;
+    padding: 22px;
+    color: #172033;
+    background: #f8fafc;
+    border: 1px solid #dbe3ed;
+    border-radius: 20px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
+}
+
+#booking-basket h2 {
+    margin: 0 0 17px;
+    color: #10182a;
+    font-size: 1.3rem;
+}
+
+#booking-basket > p {
+    margin: 0;
+    color: #566176;
+    line-height: 1.5;
+}
+
+.basket-item {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 0;
+    border-bottom: 1px solid #dfe5ed;
 }
 
-.discount-row input {
-    flex: 1;
+.basket-item:first-of-type {
+    padding-top: 4px;
+}
+
+.basket-item > div {
     min-width: 0;
 }
 
-.discount-row button {
-    padding: 0 16px;
-    color: #ffffff;
-    background: #246fe5;
-    border: 0;
-    border-radius: 11px;
+.basket-item strong {
+    display: block;
+    color: #172033;
+}
+
+.basket-item p {
+    margin: 6px 0;
+    color: #4d5b70;
+    line-height: 1.4;
+}
+
+.basket-item span {
+    color: #718096;
+    font-size: 0.88rem;
+}
+
+.basket-item button {
+    flex: 0 0 auto;
+    padding: 9px 12px;
+    color: #b42318;
+    background: #fff1f0;
+    border: 1px solid #ffc9c5;
+    border-radius: 10px;
+    font-size: 0.86rem;
     font-weight: 700;
     cursor: pointer;
+    transition:
+            background-color 150ms ease,
+            border-color 150ms ease;
 }
 
-.discount-row button:disabled {
-    cursor: wait;
-    opacity: 0.65;
+.basket-item button:hover {
+    background: #ffe3e1;
+    border-color: #f6a7a2;
 }
 
-.discount-success {
-    color: #65d49b;
+#booking-basket .basket-count {
+    margin-top: 18px;
+    color: #172033;
+    font-size: 1rem;
+    text-align: right;
 }
 
-.discount-error {
-    color: #ff8f8f;
+/* Keyboard navigation */
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(96, 165, 250, 0.55);
+    outline-offset: 3px;
 }
 
-@media (max-width: 420px) {
-    .discount-row {
-        flex-direction: column;
+/* Tablets and phones */
+
+@media (max-width: 600px) {
+    #root {
+        padding: 14px 10px 36px;
     }
 
-    .discount-row button {
-        min-height: 44px;
+    #booking-container {
+        padding: 20px 14px;
+        border-radius: 19px;
+    }
+
+    #lesson-type-selector {
+        margin-bottom: 24px;
+    }
+
+    .lesson-type-options {
+        gap: 8px;
+    }
+
+    .lesson-type-options button {
+        min-height: 78px;
+        padding: 13px 11px;
+        border-radius: 13px;
+    }
+
+    .lesson-type-options strong {
+        font-size: 0.92rem;
+    }
+
+    #calendar-header {
+        margin-bottom: 16px;
+    }
+
+    #month-container {
+        padding: 0 8px;
+        font-size: 1.08rem;
+    }
+
+    .nav-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+    }
+
+    #calendar-grid {
+        gap: 4px;
+    }
+
+    .day-name {
+        padding-bottom: 7px;
+        font-size: 0.65rem;
+    }
+
+    .day-number {
+        border-radius: 9px;
+        font-size: 0.84rem;
+    }
+
+    .time-slot {
+        min-height: 42px;
+        margin: 0 6px 7px 0;
+        padding: 9px 15px;
+    }
+
+    #booking-basket {
+        padding: 18px 16px;
+        border-radius: 17px;
+    }
+
+    .basket-item {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 390px) {
+    #root {
+        padding-right: 6px;
+        padding-left: 6px;
+    }
+
+    #booking-container {
+        padding-right: 11px;
+        padding-left: 11px;
+    }
+
+    .lesson-type-options {
+        grid-template-columns: 1fr;
+    }
+
+    .lesson-type-options button {
+        min-height: 68px;
+    }
+
+    #calendar-grid {
+        gap: 2px;
+    }
+
+    .day-name {
+        font-size: 0.6rem;
+    }
+
+    .day-number {
+        font-size: 0.78rem;
+    }
+
+    .basket-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .basket-item button {
+        width: 100%;
     }
 }

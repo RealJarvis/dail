@@ -4,17 +4,39 @@ import { getGoogleBusyPeriods } from "../services/googleCalendar.js";
 
 const availabilityRouter = Router();
 
-availabilityRouter.get("/availability", async (_request, response) => {
+type LessonType = "regular" | "trial";
+
+function getLessonDuration(lessonType: LessonType): number {
+    return lessonType === "trial" ? 40 : 55;
+}
+
+availabilityRouter.get("/availability", async (request, response) => {
+    const requestedType = request.query.lessonType ?? "regular";
+
+    if (
+        requestedType !== "regular" &&
+        requestedType !== "trial"
+    ) {
+        response.status(400).json({
+            message: "Lesson type must be regular or trial.",
+        });
+        return;
+    }
+
+    const lessonType: LessonType = requestedType;
+    const durationMinutes = getLessonDuration(lessonType);
+
+    response.setHeader("Cache-Control", "no-store");
+
     try {
         const result = await pool.query(
             `
                 SELECT
                     slots.id,
                     slots.starts_at,
-                    slots.duration_minutes,
                     slots.starts_at
-                        + slots.duration_minutes * INTERVAL '1 minute'
-                        AS ends_at
+                        + $1::integer * INTERVAL '1 minute'
+                    AS ends_at
                 FROM availability_slots AS slots
                 WHERE slots.active = TRUE
                   AND slots.starts_at >= NOW()
@@ -33,16 +55,31 @@ availabilityRouter.get("/availability", async (_request, response) => {
                     )
                     )
 
+                  AND NOT EXISTS (
+                    SELECT 1
+                    FROM appointments
+                    WHERE appointments.availability_slot_id = slots.id
+                  AND appointments.status = 'confirmed'
+                    )
+
                 ORDER BY slots.starts_at
             `,
+            [durationMinutes],
         );
 
         if (result.rows.length === 0) {
-            response.json({ slots: [] });
+            response.json({
+                lessonType,
+                durationMinutes,
+                slots: [],
+            });
             return;
         }
 
-        const firstSlotStart = new Date(result.rows[0].starts_at);
+        const firstSlotStart = new Date(
+            result.rows[0].starts_at,
+        );
+
         const lastSlotEnd = new Date(
             result.rows[result.rows.length - 1].ends_at,
         );
@@ -57,25 +94,33 @@ availabilityRouter.get("/availability", async (_request, response) => {
                 const slotStart = new Date(row.starts_at);
                 const slotEnd = new Date(row.ends_at);
 
-                const conflictsWithGoogle = busyPeriods.some(
+                return !busyPeriods.some(
                     (busyPeriod) =>
                         slotStart < busyPeriod.end &&
                         slotEnd > busyPeriod.start,
                 );
-
-                return !conflictsWithGoogle;
             })
             .map((row) => ({
                 id: String(row.id),
-                startsAt: new Date(row.starts_at).toISOString(),
-                endsAt: new Date(row.ends_at).toISOString(),
-                durationMinutes: Number(row.duration_minutes),
+                startsAt: new Date(
+                    row.starts_at,
+                ).toISOString(),
+                endsAt: new Date(
+                    row.ends_at,
+                ).toISOString(),
+                durationMinutes,
             }));
 
-        response.setHeader("Cache-Control", "no-store");
-        response.json({ slots });
+        response.json({
+            lessonType,
+            durationMinutes,
+            slots,
+        });
     } catch (error: unknown) {
-        console.error("Could not check Google Calendar:", error);
+        console.error(
+            "Could not load availability:",
+            error,
+        );
 
         response.status(503).json({
             message: "Availability is temporarily unavailable.",

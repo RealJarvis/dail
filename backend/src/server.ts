@@ -7,23 +7,25 @@ import availabilityRouter from "./routes/availability.js";
 import googleCalendarRouter from "./routes/googleCalendar.js";
 import bookingHoldsRouter from "./routes/bookingHolds.js";
 import adminRouter from "./routes/admin.js";
+import appointmentsRouter from "./routes/appointments.js";
 
 const app = express();
 
 const port = Number(process.env.PORT ?? 3000);
 const frontendUrl =
     process.env.FRONTEND_URL ?? "http://localhost:5173";
-app.use(express.json());
-app.use("/api", bookingHoldsRouter);
-app.use("/api", googleCalendarRouter);
+
 app.use(
     cors({
         origin: frontendUrl,
     }),
 );
+app.use(express.json());
+app.use("/api", appointmentsRouter);
+app.use("/api", bookingHoldsRouter);
+app.use("/api", googleCalendarRouter);
+
 app.use("/api/admin", adminRouter);
-
-
 app.use("/api", pricingRouter);
 app.use("/api", availabilityRouter);
 

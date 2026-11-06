@@ -79,3 +79,100 @@ export async function getGoogleBusyPeriods(
         }),
     );
 }
+
+export type CreateLessonEventInput = {
+    appointmentId: string;
+    lessonType: "regular" | "trial";
+    studentName: string;
+    studentEmail: string;
+    startsAt: Date;
+    endsAt: Date;
+};
+
+export type CreatedGoogleEvent = {
+    eventId: string;
+    meetUrl: string | null;
+    calendarUrl: string | null;
+};
+
+export async function createGoogleLessonEvent(
+    input: CreateLessonEventInput,
+): Promise<CreatedGoogleEvent> {
+    const oauthClient = createAuthorizedClient();
+
+    const calendar = google.calendar({
+        version: "v3",
+        auth: oauthClient,
+    });
+
+    const calendarId =
+        process.env.GOOGLE_BOOKING_CALENDAR_ID ?? "primary";
+
+    const timeZone =
+        process.env.TUTOR_TIMEZONE ?? "Europe/Lisbon";
+
+    const summary =
+        input.lessonType === "trial"
+            ? "Пробний урок англійської з Ігорем"
+            : "Урок англійської з Ігорем";
+
+    // Google event IDs only allow a restricted character set.
+    // A UUID without hyphens contains valid hexadecimal characters.
+    const eventId = `dail${input.appointmentId.replaceAll("-", "")}`;
+
+    const result = await calendar.events.insert({
+        calendarId,
+        conferenceDataVersion: 1,
+        sendUpdates: "all",
+        requestBody: {
+            id: eventId,
+            summary,
+            description:
+                "Урок заброньовано через Dail. Для підключення скористайтеся посиланням Google Meet у цій події.", start: {
+                dateTime: input.startsAt.toISOString(),
+                timeZone,
+            },
+            end: {
+                dateTime: input.endsAt.toISOString(),
+                timeZone,
+            },
+            attendees: [
+                {
+                    email: input.studentEmail,
+                    displayName: input.studentName,
+                },
+            ],
+            guestsCanInviteOthers: false,
+            guestsCanModify: false,
+            conferenceData: {
+                createRequest: {
+                    requestId: `meet-${input.appointmentId}`,
+                    conferenceSolutionKey: {
+                        type: "hangoutsMeet",
+                    },
+                },
+            },
+        },
+    });
+
+    if (!result.data.id) {
+        throw new Error(
+            "Google created an event without returning its ID.",
+        );
+    }
+
+    const videoEntry =
+        result.data.conferenceData?.entryPoints?.find(
+            (entryPoint) =>
+                entryPoint.entryPointType === "video",
+        );
+
+    return {
+        eventId: result.data.id,
+        meetUrl:
+            result.data.hangoutLink ??
+            videoEntry?.uri ??
+            null,
+        calendarUrl: result.data.htmlLink ?? null,
+    };
+}

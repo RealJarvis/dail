@@ -42,6 +42,7 @@ googleCalendarRouter.get("/google/connect", (_request, response) => {
         include_granted_scopes: true,
         scope: [
             "https://www.googleapis.com/auth/calendar.freebusy",
+            "https://www.googleapis.com/auth/calendar.events",
         ],
         state: expectedState,
     });
