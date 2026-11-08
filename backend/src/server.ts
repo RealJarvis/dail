@@ -2,10 +2,10 @@ import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import { pool } from "./db.js";
-import pricingRouter from "./routes/pricing.js";
+
 import availabilityRouter from "./routes/availability.js";
 import googleCalendarRouter from "./routes/googleCalendar.js";
-import bookingHoldsRouter from "./routes/bookingHolds.js";
+
 import adminRouter from "./routes/admin.js";
 import appointmentsRouter from "./routes/appointments.js";
 
@@ -22,11 +22,11 @@ app.use(
 );
 app.use(express.json());
 app.use("/api", appointmentsRouter);
-app.use("/api", bookingHoldsRouter);
+
 app.use("/api", googleCalendarRouter);
 
 app.use("/api/admin", adminRouter);
-app.use("/api", pricingRouter);
+
 app.use("/api", availabilityRouter);
 
 app.get("/api/health", (_request, response) => {
