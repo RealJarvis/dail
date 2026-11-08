@@ -21,6 +21,13 @@ function BookingCalendar() {
     lessonType: LessonType;
   };
 
+  type BatchBookingResponse = {
+    booked?: boolean;
+    appointmentCount?: number;
+    warning?: string | null;
+    message?: string;
+  };
+
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [lessonType, setLessonType] =
@@ -45,6 +52,14 @@ function BookingCalendar() {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
 
+  const [isBooking, setIsBooking] = useState(false);
+
+  const [bookingError, setBookingError] =
+      useState<string | null>(null);
+
+  const [bookingSuccess, setBookingSuccess] =
+      useState<string | null>(null);
+
   const daysOfWeekUA = [
     "Пон",
     "Вів",
@@ -56,6 +71,8 @@ function BookingCalendar() {
   ];
 
   function toggleSlot(slot: AvailabilitySlot): void {
+    setBookingError(null);
+    setBookingSuccess(null);
     setSelectedLessons((currentLessons) => {
       const isAlreadySelected = currentLessons.some(
           (lesson) => lesson.id === slot.id,
@@ -78,11 +95,119 @@ function BookingCalendar() {
   }
 
   function removeLesson(slotId: string): void {
+    setBookingError(null);
+    setBookingSuccess(null);
     setSelectedLessons((currentLessons) =>
         currentLessons.filter(
             (lesson) => lesson.id !== slotId,
         ),
     );
+  }
+
+  async function confirmBooking(): Promise<void> {
+    const cleanName = studentName.trim();
+    const cleanEmail = studentEmail.trim();
+
+    if (cleanName.length < 2) {
+      setBookingError(
+          "Введіть ім’я, яке містить щонайменше 2 символи.",
+      );
+      return;
+    }
+
+    if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)
+    ) {
+      setBookingError(
+          "Введіть правильну електронну пошту.",
+      );
+      return;
+    }
+
+    if (selectedLessons.length === 0) {
+      setBookingError(
+          "Додайте хоча б одне заняття до кошика.",
+      );
+      return;
+    }
+
+    try {
+      setIsBooking(true);
+      setBookingError(null);
+      setBookingSuccess(null);
+
+      const response = await fetch(
+          `${API_URL}/api/appointments/batch`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              studentName: cleanName,
+              studentEmail: cleanEmail,
+              lessons: selectedLessons.map(
+                  (lesson) => ({
+                    slotId: lesson.id,
+                    lessonType:
+                    lesson.lessonType,
+                  }),
+              ),
+            }),
+          },
+      );
+
+      const data =
+          (await response.json()) as BatchBookingResponse;
+
+      if (!response.ok) {
+        throw new Error(
+            data.message ??
+            "Не вдалося забронювати заняття.",
+        );
+      }
+
+      if (
+          data.booked !== true ||
+          typeof data.appointmentCount !== "number"
+      ) {
+        throw new Error(
+            "Сервер повернув некоректну відповідь.",
+        );
+      }
+
+      const bookedSlotIds = new Set(
+          selectedLessons.map(
+              (lesson) => lesson.id,
+          ),
+      );
+
+      setAvailableSlots((currentSlots) =>
+          currentSlots.filter(
+              (slot) =>
+                  !bookedSlotIds.has(slot.id),
+          ),
+      );
+
+      setSelectedLessons([]);
+
+      const confirmationMessage =
+          `Бронювання підтверджено. Кількість занять: ${data.appointmentCount}.`;
+
+      setBookingSuccess(
+          data.warning
+              ? `${confirmationMessage} ${data.warning}`
+              : `${confirmationMessage} Запрошення надіслано на вашу електронну пошту.`,
+      );
+    } catch (error: unknown) {
+      setBookingError(
+          error instanceof Error
+              ? error.message
+              : "Не вдалося забронювати заняття.",
+      );
+    } finally {
+      setIsBooking(false);
+    }
   }
 
   function selectDay(day: number): void {
@@ -522,6 +647,30 @@ function BookingCalendar() {
                     {selectedLessons.length}
                   </strong>
                 </p>
+            )}
+            {bookingError && (
+                <p className="booking-error">
+                  {bookingError}
+                </p>
+            )}
+
+            {bookingSuccess && (
+                <p className="booking-success">
+                  {bookingSuccess}
+                </p>
+            )}
+
+            {selectedLessons.length > 0 && (
+                <button
+                    id="confirm-booking-btn"
+                    type="button"
+                    onClick={() => void confirmBooking()}
+                    disabled={isBooking}
+                >
+                  {isBooking
+                      ? "Бронювання..."
+                      : "Підтвердити всі заняття"}
+                </button>
             )}
           </section>
         </div>

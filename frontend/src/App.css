@@ -422,6 +422,62 @@ input:focus-visible {
     outline-offset: 3px;
 }
 
+#confirm-booking-btn {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 20px;
+    padding: 12px 18px;
+    color: #ffffff;
+    background: linear-gradient(
+            135deg,
+            #246fe5,
+            #1b5ec5
+    );
+    border: 1px solid #4c8aed;
+    border-radius: 12px;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(36, 111, 229, 0.25);
+    transition:
+            transform 150ms ease,
+            box-shadow 150ms ease,
+            opacity 150ms ease;
+}
+
+#confirm-booking-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(36, 111, 229, 0.35);
+}
+
+#confirm-booking-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+#confirm-booking-btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+#booking-basket .booking-error {
+    margin-top: 16px;
+    padding: 11px 13px;
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    text-align: left;
+}
+
+#booking-basket .booking-success {
+    margin-top: 16px;
+    padding: 12px 13px;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    text-align: left;
+}
+
 /* Tablets and phones */
 
 @media (max-width: 600px) {
@@ -536,4 +592,4 @@ input:focus-visible {
     .basket-item button {
         width: 100%;
     }
-} 
+}
