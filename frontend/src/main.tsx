@@ -4,12 +4,17 @@ import "./index.css";
 import App from "./App.tsx";
 import AdminAvailabilityPage from "./pages/AdminAvailabilityPage.tsx";
 
+const normalizedPath =
+    window.location.pathname.replace(/\/+$/, "");
+
 const isAdminPage =
-    window.location.pathname === "/admin" ||
-    window.location.pathname === "/admin/";
+    window.location.hash === "#/admin" ||
+    normalizedPath === "/admin";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
-        {isAdminPage ? <AdminAvailabilityPage /> : <App />}
+        {isAdminPage
+            ? <AdminAvailabilityPage />
+            : <App />}
     </StrictMode>,
 );
