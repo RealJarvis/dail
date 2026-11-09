@@ -28,6 +28,7 @@ input {
     display: none;
 }
 
+
 #booking-container {
     width: min(100%, 680px);
     margin: 0 auto;
@@ -591,5 +592,288 @@ input:focus-visible {
 
     .basket-item button {
         width: 100%;
+    }
+}
+
+/* Sticky Dail menu */
+
+#menu-bar {
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+
+    display: flex;
+    width: min(100%, 680px);
+    min-height: 64px;
+    margin: 0 auto 18px;
+    padding: 9px 11px;
+
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    background: rgba(6, 18, 41, 0.88);
+    border: 1px solid rgba(72, 104, 151, 0.7);
+    border-radius: 17px;
+
+    box-shadow:
+            0 12px 30px rgba(0, 0, 0, 0.28),
+            0 2px 8px rgba(0, 0, 0, 0.18);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.dail-brand {
+    min-height: 44px;
+    padding: 7px 11px;
+
+    color: #ffffff;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+
+    font-size: 1.45rem;
+    font-weight: 850;
+    letter-spacing: -0.04em;
+
+    cursor: pointer;
+    transition:
+            color 150ms ease,
+            background-color 150ms ease;
+}
+
+.dail-brand:hover {
+    color: #bcd5ff;
+    background: rgba(36, 111, 229, 0.12);
+}
+
+#referral-button {
+    min-height: 44px;
+    padding: 10px 17px;
+
+    color: #ffffff;
+    background: linear-gradient(
+            135deg,
+            #246fe5,
+            #1b5ec5
+    );
+
+    border: 1px solid #68a0f5;
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+    font-weight: 750;
+    white-space: nowrap;
+
+    cursor: pointer;
+    box-shadow: 0 6px 17px rgba(36, 111, 229, 0.3);
+
+    transition:
+            transform 150ms ease,
+            background-color 150ms ease,
+            box-shadow 150ms ease;
+}
+
+#referral-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 22px rgba(36, 111, 229, 0.4);
+}
+
+#referral-button:active {
+    transform: scale(0.97);
+}
+
+/* Referral popup */
+
+.referral-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: grid;
+    padding: 20px;
+    place-items: center;
+
+    background: rgba(2, 6, 23, 0.78);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+}
+
+.referral-modal {
+    position: relative;
+
+    width: min(100%, 520px);
+    max-height: calc(100vh - 40px);
+    padding: 30px;
+    overflow-y: auto;
+
+    color: #eef4ff;
+    background: #081733;
+    border: 1px solid #466795;
+    border-radius: 22px;
+
+    box-shadow:
+            0 30px 90px rgba(0, 0, 0, 0.55),
+            0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.referral-modal h2 {
+    margin: 0 44px 14px 0;
+
+    color: #ffffff;
+    font-size: 1.45rem;
+    line-height: 1.25;
+}
+
+.referral-modal > p {
+    margin: 0 0 22px;
+
+    color: #bccae0;
+    line-height: 1.65;
+}
+
+.referral-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+
+    display: grid;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    place-items: center;
+
+    color: #dbeafe;
+    background: #102344;
+    border: 1px solid #34588c;
+    border-radius: 11px;
+
+    font-size: 1.4rem;
+    line-height: 1;
+
+    cursor: pointer;
+    transition:
+            color 150ms ease,
+            background-color 150ms ease,
+            border-color 150ms ease;
+}
+
+.referral-close:hover {
+    color: #ffffff;
+    background: #193866;
+    border-color: #6798df;
+}
+
+.referral-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+}
+
+.referral-link input {
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    padding: 11px 13px;
+
+    color: #172033;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 11px;
+    outline: none;
+}
+
+.referral-link input:focus {
+    border-color: #5790ee;
+    box-shadow: 0 0 0 4px rgba(87, 144, 238, 0.2);
+}
+
+.referral-link button {
+    min-height: 48px;
+    padding: 11px 16px;
+
+    color: #ffffff;
+    background: #246fe5;
+    border: 1px solid #68a0f5;
+    border-radius: 11px;
+
+    font-weight: 750;
+    cursor: pointer;
+
+    transition:
+            background-color 150ms ease,
+            transform 150ms ease;
+}
+
+.referral-link button:hover {
+    background: #1d63cf;
+}
+
+.referral-link button:active {
+    transform: scale(0.97);
+}
+
+.referral-modal .copy-message {
+    margin: 14px 0 0;
+
+    color: #6ee7b7;
+    font-size: 0.9rem;
+    font-weight: 650;
+}
+
+/* Menu and popup on phones */
+
+@media (max-width: 600px) {
+    #menu-bar {
+        top: 6px;
+        min-height: 58px;
+        margin-bottom: 12px;
+        padding: 7px 8px;
+        gap: 8px;
+        border-radius: 14px;
+    }
+
+    .dail-brand {
+        min-height: 42px;
+        padding: 6px 8px;
+        font-size: 1.25rem;
+    }
+
+    #referral-button {
+        min-height: 42px;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        border-radius: 10px;
+    }
+
+    .referral-backdrop {
+        padding: 12px;
+    }
+
+    .referral-modal {
+        max-height: calc(100vh - 24px);
+        padding: 24px 18px;
+        border-radius: 18px;
+    }
+
+    .referral-modal h2 {
+        font-size: 1.25rem;
+    }
+
+    .referral-link {
+        grid-template-columns: 1fr;
+    }
+
+    .referral-link button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 350px) {
+    #referral-button {
+        max-width: 165px;
+        white-space: normal;
+        line-height: 1.15;
     }
 }

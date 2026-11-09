@@ -30,8 +30,27 @@ function BookingCalendar() {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
+  const requestedLessonType =
+      new URLSearchParams(window.location.search)
+          .get("lessonType");
+
+  const initialLessonType: LessonType =
+      requestedLessonType === "trial"
+          ? "trial"
+          : "regular";
+
+  const referralLink =
+      `${window.location.origin}${import.meta.env.BASE_URL}` +
+      "?lessonType=trial";
+
   const [lessonType, setLessonType] =
-      useState<LessonType>("regular");
+      useState<LessonType>(initialLessonType);
+
+  const [isReferralOpen, setIsReferralOpen] =
+      useState(false);
+
+  const [copyMessage, setCopyMessage] =
+      useState("");
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] =
@@ -371,9 +390,107 @@ function BookingCalendar() {
           new Date(secondLesson.startsAt).getTime(),
   );
 
+  async function copyReferralLink(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setCopyMessage("Посилання скопійовано!");
+    } catch {
+      setCopyMessage(
+          "Не вдалося скопіювати. Виділіть посилання вручну.",
+      );
+    }
+  }
+
   return (
       <>
         <div id="step-container"></div>
+
+        <header id="menu-bar">
+          <button
+              className="dail-brand"
+              type="button"
+              onClick={() =>
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  })
+              }
+              aria-label="На початок сторінки"
+          >
+            Dail
+          </button>
+
+          <button
+              id="referral-button"
+              type="button"
+              onClick={() => {
+                setCopyMessage("");
+                setIsReferralOpen(true);
+              }}
+          >
+            2 безкоштовні уроки
+          </button>
+        </header>
+
+        {isReferralOpen && (
+            <div
+                className="referral-backdrop"
+                onClick={() => setIsReferralOpen(false)}
+            >
+              <section
+                  className="referral-modal"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="referral-title"
+                  onClick={(event) => event.stopPropagation()}
+              >
+                <button
+                    className="referral-close"
+                    type="button"
+                    onClick={() => setIsReferralOpen(false)}
+                    aria-label="Закрити вікно"
+                >
+                  ×
+                </button>
+
+                <h2 id="referral-title">
+                  Отримайте 2 безкоштовні уроки
+                </h2>
+
+                <p>
+                  Запросіть друга на пробний урок через Dail.
+                  Скопіюйте посилання та надішліть його другу.
+                  Коли друг забронює і проведе перший урок,
+                  напишіть мені, щоб отримати винагороду.
+                </p>
+
+                <div className="referral-link">
+                  <input
+                      type="text"
+                      value={referralLink}
+                      readOnly
+                      aria-label="Реферальне посилання"
+                      onFocus={(event) =>
+                          event.currentTarget.select()
+                      }
+                  />
+
+                  <button
+                      type="button"
+                      onClick={() => void copyReferralLink()}
+                  >
+                    Копіювати
+                  </button>
+                </div>
+
+                {copyMessage && (
+                    <p className="copy-message" role="status">
+                      {copyMessage}
+                    </p>
+                )}
+              </section>
+            </div>
+        )}
 
         <div id="booking-container">
           <section id="lesson-type-selector">
