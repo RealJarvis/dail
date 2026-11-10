@@ -87,6 +87,10 @@ export type CreateLessonEventInput = {
     studentEmail: string;
     startsAt: Date;
     endsAt: Date;
+    trialDetails?: {
+        preferredLessonFrequency: string;
+        personalMessage: string;
+    } | null;
 };
 
 export type CreatedGoogleEvent = {
@@ -113,8 +117,30 @@ export async function createGoogleLessonEvent(
 
     const summary =
         input.lessonType === "trial"
-            ? "Пробний урок англійської з Ігорем"
-            : "Урок англійської з Ігорем";
+            ? `${input.studentName} - Пробний урок англійської`
+            : `${input.studentName} - Урок англійської`;
+
+    let description =
+        "Урок заброньовано через Dail. " +
+        "Для підключення скористайтеся посиланням " +
+        "Google Meet у цій події. " +
+        "Якщо вам не підходить час, повідомте " +
+        "викладача щонайменше за 12 годин до уроку.";
+
+    if (
+        input.lessonType === "trial" &&
+        input.trialDetails
+    ) {
+        description +=
+            "\n\nБажана кількість занять на тиждень: " +
+            input.trialDetails.preferredLessonFrequency;
+
+        if (input.trialDetails.personalMessage) {
+            description +=
+                "\nПовідомлення студента: " +
+                input.trialDetails.personalMessage;
+        }
+    }
 
     // Google event IDs only allow a restricted character set.
     // A UUID without hyphens contains valid hexadecimal characters.
@@ -127,8 +153,8 @@ export async function createGoogleLessonEvent(
         requestBody: {
             id: eventId,
             summary,
-            description:
-                "Урок заброньовано через Dail. Для підключення скористайтеся посиланням Google Meet у цій події.", start: {
+            description,
+            start: {
                 dateTime: input.startsAt.toISOString(),
                 timeZone,
             },

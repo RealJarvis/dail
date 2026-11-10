@@ -10,6 +10,11 @@ const appointmentsRouter = Router();
 
 type LessonType = "regular" | "trial";
 
+type TrialDetails = {
+    preferredLessonFrequency: string;
+    personalMessage: string;
+};
+
 function getLessonDuration(lessonType: LessonType): number {
     return lessonType === "trial" ? 40 : 55;
 }
@@ -295,10 +300,12 @@ appointmentsRouter.post(
             studentName,
             studentEmail,
             lessons,
+            trialDetails,
         } = (request.body ?? {}) as {
             studentName?: unknown;
             studentEmail?: unknown;
             lessons?: unknown;
+            trialDetails?: unknown;
         };
 
         const validName =
@@ -312,6 +319,9 @@ appointmentsRouter.post(
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
                 studentEmail.trim(),
             );
+
+
+
 
         if (
             !validName ||
@@ -371,6 +381,53 @@ appointmentsRouter.post(
                 slotId,
                 lessonType,
             });
+        }
+
+        const hasTrialLesson = requestedLessons.some(
+            (lesson) => lesson.lessonType === "trial",
+        );
+
+        let validatedTrialDetails: TrialDetails | null = null;
+
+        if (hasTrialLesson) {
+            if (
+                typeof trialDetails !== "object" ||
+                trialDetails === null
+            ) {
+                response.status(400).json({
+                    message:
+                        "Додайте інформацію про пробний урок.",
+                });
+                return;
+            }
+
+            const {
+                preferredLessonFrequency,
+                personalMessage,
+            } = trialDetails as {
+                preferredLessonFrequency?: unknown;
+                personalMessage?: unknown;
+            };
+
+            if (
+                typeof preferredLessonFrequency !== "string" ||
+                !["1", "2", "3", "4"].includes(
+                    preferredLessonFrequency,
+                ) ||
+                typeof personalMessage !== "string" ||
+                personalMessage.length > 1000
+            ) {
+                response.status(400).json({
+                    message:
+                        "Некоректна інформація про пробний урок.",
+                });
+                return;
+            }
+
+            validatedTrialDetails = {
+                preferredLessonFrequency,
+                personalMessage: personalMessage.trim(),
+            };
         }
 
         const uniqueSlotIds = new Set(
@@ -687,15 +744,17 @@ appointmentsRouter.post(
                                         lessonType:
                                         item.lessonType,
                                         studentName:
-                                        item.appointment
-                                            .studentName,
+                                        item.appointment.studentName,
                                         studentEmail:
-                                        item.appointment
-                                            .studentEmail,
+                                        item.appointment.studentEmail,
                                         startsAt:
                                         item.startsAt,
                                         endsAt:
                                         item.endsAt,
+                                        trialDetails:
+                                            item.lessonType === "trial"
+                                                ? validatedTrialDetails
+                                                : null,
                                     });
 
                                 await pool.query(

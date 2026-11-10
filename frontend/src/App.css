@@ -62,12 +62,12 @@ input {
 
 .lesson-type-options button {
     display: flex;
-    min-height: 84px;
+    min-height: 54px;
     padding: 16px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
     color: #dce7f8;
     text-align: left;
     background: #0b1a35;
@@ -624,9 +624,16 @@ input:focus-visible {
     -webkit-backdrop-filter: blur(14px);
 }
 
+#dailicon {
+
+    width: 60px;
+    height: 29px;
+
+}
+
 .dail-brand {
     min-height: 44px;
-    padding: 7px 11px;
+    padding: 7px 20px;
 
     color: #ffffff;
     background: transparent;
@@ -822,6 +829,73 @@ input:focus-visible {
     font-weight: 650;
 }
 
+/* Trial lesson details */
+
+#trial-details {
+    margin-top: 22px;
+}
+
+#trial-details label {
+    display: block;
+    margin: 0 0 8px;
+
+    color: #dbe7f8;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+
+#trial-details label:not(:first-child) {
+    margin-top: 18px;
+}
+
+#trial-details select,
+#trial-details textarea {
+    display: block;
+    width: 100%;
+
+    color: #172033;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    outline: none;
+
+    font-size: 1rem;
+
+    transition:
+            border-color 150ms ease,
+            box-shadow 150ms ease;
+}
+
+#trial-details select {
+    min-height: 48px;
+    padding: 11px 13px;
+    cursor: pointer;
+}
+
+#trial-details textarea {
+    min-height: 130px;
+    padding: 12px 14px;
+
+    line-height: 1.5;
+    resize: vertical;
+}
+
+#trial-details textarea::placeholder {
+    color: #8793a5;
+}
+
+#trial-details select:focus,
+#trial-details textarea:focus {
+    border-color: #5790ee;
+    box-shadow: 0 0 0 4px rgba(87, 144, 238, 0.2);
+}
+
+#trial-details select:hover,
+#trial-details textarea:hover {
+    border-color: #8aa9d2;
+}
+
 /* Menu and popup on phones */
 
 @media (max-width: 600px) {
@@ -867,6 +941,16 @@ input:focus-visible {
 
     .referral-link button {
         width: 100%;
+    }
+
+    #trial-details {
+        margin-top: 18px;
+        padding: 15px 13px;
+        border-radius: 13px;
+    }
+
+    #trial-details textarea {
+        min-height: 120px;
     }
 }
 

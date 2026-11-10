@@ -71,6 +71,19 @@ function BookingCalendar() {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
 
+  const hasTrialLesson = selectedLessons.some(
+      (lesson) => lesson.lessonType === "trial",
+  );
+
+  const shouldShowTrialDetails =
+      lessonType === "trial" ||
+      selectedLessons.some(
+          (lesson) => lesson.lessonType === "trial",
+      );
+
+  const [preferredLessonFrequency, setPreferredLessonFrequency] = useState("");
+  const [personalMessage, setPersonalMessage] = useState("");
+
   const [isBooking, setIsBooking] = useState(false);
 
   const [bookingError, setBookingError] =
@@ -150,6 +163,12 @@ function BookingCalendar() {
       return;
     }
 
+    if (hasTrialLesson &&
+        preferredLessonFrequency === "") {
+      setBookingError("Оберіть бажану кількість занять на тиждень");
+      return;
+    }
+
     try {
       setIsBooking(true);
       setBookingError(null);
@@ -172,6 +191,10 @@ function BookingCalendar() {
                     lesson.lessonType,
                   }),
               ),
+              trialDetails: hasTrialLesson ?
+                  {preferredLessonFrequency,
+                  personalMessage: personalMessage.trim()
+                  } : null,
             }),
           },
       );
@@ -417,7 +440,7 @@ function BookingCalendar() {
               }
               aria-label="На початок сторінки"
           >
-            Dail
+            <img src="../src/assets/menu-icon.png" id="dailicon" alt="icon"/>
           </button>
 
           <button
@@ -597,7 +620,7 @@ function BookingCalendar() {
             Вибраний день:{" "}
             {selectedDay === null
                 ? "не вибрано"
-                : `${selectedDay}/${
+                : `${selectedDay}.${
                     currentDate.getMonth() + 1
                 }`}
           </p>
@@ -701,7 +724,40 @@ function BookingCalendar() {
                 autoComplete="email"
                 placeholder="student@example.com"
             />
+
+            {shouldShowTrialDetails && (
+                <div id="trial-details">
+                  <label htmlFor="lessonFrequncy">Скільки занять на тиждень ви хотіли б мати? </label>
+                  <select id="lessonFrequncy"
+                          value={preferredLessonFrequency}
+                          onChange={(event) =>
+                              setPreferredLessonFrequency(
+                                  event.target.value)}>
+                    <option value="">Оберіть кількість</option>
+                    <option value="1">1 раз на тиждень</option>
+                    <option value="2">2 рази на тиждень</option>
+                    <option value="3">3 рази на тиждень</option>
+                    <option value="4">4 або більше разів на тиждень</option>
+                  </select>
+                  
+                  <label htmlFor="personalMessage">Особисте повідомлення</label>
+                  <textarea
+                      id="personalMessage"
+                      value={personalMessage}
+                      placeholder="Розкажіть про свої цілі або побажання"
+                      maxLength={1000}
+                      rows={5}
+                      onChange={(event) =>
+                                setPersonalMessage(event.target.value)}></textarea>
+
+                </div>
+
+
+
+            )}
           </section>
+
+
 
           <section id="booking-basket">
             <h2>Кошик занять</h2>
