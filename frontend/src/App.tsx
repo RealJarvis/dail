@@ -452,7 +452,7 @@ function BookingCalendar() {
                 setIsReferralOpen(true);
               }}
           >
-            2 безкоштовні уроки
+            🎁 2 безкоштовні уроки
           </button>
         </header>
 
