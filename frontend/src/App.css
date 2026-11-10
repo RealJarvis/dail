@@ -625,10 +625,14 @@ input:focus-visible {
 }
 
 #dailicon {
+    display: block;
+    width: auto;
+    height: 38px;
+    object-fit: contain;
 
-    width: 60px;
-    height: 29px;
-
+    filter: drop-shadow(
+            0 3px 8px rgba(36, 111, 229, 0.3)
+    );
 }
 
 .dail-brand {
@@ -907,6 +911,9 @@ input:focus-visible {
         gap: 8px;
         border-radius: 14px;
     }
+    #dailicon {
+        height: 33px;
+    }
 
     .dail-brand {
         min-height: 42px;
@@ -945,8 +952,7 @@ input:focus-visible {
 
     #trial-details {
         margin-top: 18px;
-        padding: 15px 13px;
-        border-radius: 13px;
+
     }
 
     #trial-details textarea {

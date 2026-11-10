@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import menuIcon from "./assets/menu-icon.png";
 
 function BookingCalendar() {
   type LessonType = "regular" | "trial";
@@ -440,7 +441,7 @@ function BookingCalendar() {
               }
               aria-label="На початок сторінки"
           >
-            <img src="../src/assets/menu-icon.png" id="dailicon" alt="icon"/>
+            <img src={menuIcon} id="dailicon" alt="icon"/>
           </button>
 
           <button
