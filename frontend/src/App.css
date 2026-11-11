@@ -213,12 +213,32 @@ button.day-number:hover {
 button.day-number:active {
     transform: scale(0.92);
 }
-
-button.day-number.selected-day {
+.day-number.today {
     color: #ffffff;
-    background: #246fe5;
-    border-color: #6fa4f8;
-    box-shadow: 0 6px 16px rgba(36, 111, 229, 0.35);
+    background: rgba(36, 111, 229, 0.16);
+    border: 2px solid #5b9cff;
+    box-shadow: 0 0 0 4px rgba(36, 111, 229, 0.1);
+}
+
+.day-number.past {
+    color: rgba(210, 222, 241, 0.35);
+    background: transparent;
+    border-color: transparent;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.day-number.past:hover {
+    color: rgba(210, 222, 241, 0.35);
+    background: transparent;
+    transform: none;
+}
+
+.day-number.selected {
+    color: #ffffff;
+    background: #2874e8;
+    border-color: #62a2ff;
+    box-shadow: 0 8px 20px rgba(36, 111, 229, 0.3);
 }
 
 /* Selected date */
@@ -898,6 +918,46 @@ input:focus-visible {
 #trial-details select:hover,
 #trial-details textarea:hover {
     border-color: #8aa9d2;
+}
+
+.add-another-lesson-btn {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 20px;
+    padding: 12px 18px;
+
+    color: #246fe5;
+    background: transparent;
+    border: 2px solid #246fe5;
+    border-radius: 14px;
+
+    font: inherit;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+            background-color 160ms ease,
+            color 160ms ease,
+            transform 160ms ease;
+}
+
+.add-another-lesson-btn:hover {
+    color: #ffffff;
+    background: #246fe5;
+}
+
+.add-another-lesson-btn:active {
+    transform: scale(0.98);
+}
+
+.add-another-lesson-btn:focus-visible {
+    outline: 3px solid rgba(36, 111, 229, 0.35);
+    outline-offset: 3px;
+}
+
+.confirm-booking-btn {
+    margin-top: 12px;
 }
 
 /* Menu and popup on phones */

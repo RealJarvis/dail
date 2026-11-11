@@ -5,6 +5,9 @@ import menuIcon from "./assets/menu-icon.png";
 function BookingCalendar() {
   type LessonType = "regular" | "trial";
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   type AvailabilitySlot = {
     id: string;
     startsAt: string;
@@ -425,6 +428,15 @@ function BookingCalendar() {
     }
   }
 
+  function scrollToCalendar(): void {
+    document
+        .getElementById("calendar-grid")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+  }
+
   return (
       <>
         <div id="step-container"></div>
@@ -485,7 +497,7 @@ function BookingCalendar() {
                   Запросіть друга на пробний урок через Dail.
                   Скопіюйте посилання та надішліть його другу.
                   Коли друг забронює і проведе перший урок,
-                  напишіть мені, щоб отримати винагороду.
+                  напишіть репетитору, щоб отримати винагороду 🎁.
                 </p>
 
                 <div className="referral-link">
@@ -599,17 +611,31 @@ function BookingCalendar() {
                     />
                 );
               }
+              const calendarDate = new Date(
+                  currentDate.getFullYear(),
+                  currentDate.getMonth(),
+                  day,
+              );
+
+              const isPast = calendarDate < today;
+
+              const isToday =
+                  calendarDate.getTime() === today.getTime();
+
 
               return (
                   <button
                       type="button"
-                      className={`day-number ${
-                          selectedDay === day
-                              ? "selected-day"
-                              : ""
-                      }`}
+                      className={[
+                        "day-number",
+                        isToday ? "today" : "",
+                        isPast ? "past" : "",
+                        selectedDay === day ? "selected" : "",
+                      ]
+                          .filter(Boolean)
+                          .join(" ")}
+                      disabled={isPast}
                       onClick={() => selectDay(day)}
-                      key={`day-${day}`}
                   >
                     {day}
                   </button>
@@ -834,7 +860,16 @@ function BookingCalendar() {
                 </p>
             )}
 
+            <button
+                type="button"
+                className="add-another-lesson-btn"
+                onClick={scrollToCalendar}
+            >
+              ➕ Додати ще одне заняття
+            </button>
             {selectedLessons.length > 0 && (
+
+
                 <button
                     id="confirm-booking-btn"
                     type="button"
